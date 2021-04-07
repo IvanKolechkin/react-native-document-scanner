@@ -36,7 +36,7 @@ public class DocumentScannerViewManager extends ViewGroupManager<MainView> {
         view.setOnScannerListener(new OpenNoteCameraView.OnScannerListener() {
             @Override
             public void onPictureTaken(WritableMap data) {
-                dispatchEvent(reactContext, "onPictureTaken", data);
+                dispatchEvent(reactContext, "onDocumentScanned", data);
             }
         });
 

@@ -36,7 +36,7 @@ interface PictureTaken {
  */
 
 interface PdfScannerProps {
-  onPictureTaken?: (event: any) => void;
+  onDocumentScanned?: (event: any) => void;
   onRectangleDetect?: (event: any) => void;
   onProcessing?: () => void;
   quality?: number;
@@ -59,9 +59,9 @@ interface PdfScannerProps {
 }
 
 class PdfScanner extends React.Component<PdfScannerProps> {
-  sendOnPictureTakenEvent (event: any) {
-    if (!this.props.onPictureTaken) return null
-    return this.props.onPictureTaken(event.nativeEvent)
+  sendonDocumentScannedEvent (event: any) {
+    if (!this.props.onDocumentScanned) return null
+    return this.props.onDocumentScanned(event.nativeEvent)
   }
 
   sendOnRectangleDetectEvent (event: any) {
@@ -78,33 +78,29 @@ class PdfScanner extends React.Component<PdfScannerProps> {
 
   componentDidMount () {
     if (Platform.OS === 'android') {
-      const { onPictureTaken, onProcessing } = this.props
-      if (onPictureTaken) DeviceEventEmitter.addListener('onPictureTaken', onPictureTaken)
+      const { onDocumentScanned, onProcessing } = this.props
+      if (onDocumentScanned) DeviceEventEmitter.addListener('onDocumentScanned', onDocumentScanned)
       if (onProcessing) DeviceEventEmitter.addListener('onProcessingChange', onProcessing)
     }
   }
 
-  componentDidUpdate(prevProps: PdfScannerProps) {
+  componentDidUpdate (prevProps: PdfScannerProps) {
     if (Platform.OS === 'android') {
-      if (this.props.onPictureTaken !== prevProps.onPictureTaken) {
-        if (prevProps.onPictureTaken)
-          DeviceEventEmitter.removeListener('onPictureTaken', prevProps.onPictureTaken)
-        if (this.props.onPictureTaken)
-          DeviceEventEmitter.addListener('onPictureTaken', this.props.onPictureTaken)
+      if (this.props.onDocumentScanned !== prevProps.onDocumentScanned) {
+        if (prevProps.onDocumentScanned) { DeviceEventEmitter.removeListener('onDocumentScanned', prevProps.onDocumentScanned) }
+        if (this.props.onDocumentScanned) { DeviceEventEmitter.addListener('onDocumentScanned', this.props.onDocumentScanned) }
       }
       if (this.props.onProcessing !== prevProps.onProcessing) {
-        if (prevProps.onProcessing)
-          DeviceEventEmitter.removeListener('onProcessingChange', prevProps.onProcessing)
-        if (this.props.onProcessing)
-          DeviceEventEmitter.addListener('onProcessingChange', this.props.onProcessing)
+        if (prevProps.onProcessing) { DeviceEventEmitter.removeListener('onProcessingChange', prevProps.onProcessing) }
+        if (this.props.onProcessing) { DeviceEventEmitter.addListener('onProcessingChange', this.props.onProcessing) }
       }
     }
   }
 
   componentWillUnmount () {
     if (Platform.OS === 'android') {
-      const { onPictureTaken, onProcessing } = this.props
-      if (onPictureTaken) DeviceEventEmitter.removeListener('onPictureTaken', onPictureTaken)
+      const { onDocumentScanned, onProcessing } = this.props
+      if (onDocumentScanned) DeviceEventEmitter.removeListener('onDocumentScanned', onDocumentScanned)
       if (onProcessing) DeviceEventEmitter.removeListener('onProcessingChange', onProcessing)
     }
   }
@@ -132,7 +128,7 @@ class PdfScanner extends React.Component<PdfScannerProps> {
       <RNPdfScanner
         ref={this._setReference}
         {...this.props}
-        onPictureTaken={this.sendOnPictureTakenEvent.bind(this)}
+        onDocumentScanned={this.sendonDocumentScannedEvent.bind(this)}
         onRectangleDetect={this.sendOnRectangleDetectEvent.bind(this)}
         useFrontCam={this.props.useFrontCam || false}
         brightness={this.props.brightness || 0}
